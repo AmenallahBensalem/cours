@@ -1,0 +1,34 @@
+<form>
+  <div [hidden]="ajout">
+    <label>Code Professeur</label>
+    <input readonly type="text" [(ngModel)]="professeur.codeProf"
+           name="codeProf" class="form-control w-25">
+  </div>
+
+  <div>
+    <label>Nom</label>
+    <input type="text" [(ngModel)]="professeur.nomProf"
+           name="nomProf" class="form-control"
+           placeholder="Entrez le nom du professeur...">
+  </div>
+
+  <div>
+    <label>Spécialité</label>
+    <input type="text" [(ngModel)]="professeur.specialiteProf"
+           name="specialiteProf" class="form-control"
+           placeholder="Entrez la spécialité...">
+  </div>
+
+  <div>
+    <label>Date d'embauche</label>
+    <input type="date"
+           [ngModel]="professeur.dateEmbauche | date:'yyyy-MM-dd'"
+           (ngModelChange)="professeur.dateEmbauche = $event"
+           name="dateEmbauche" class="form-control">
+  </div>
+
+  <div class="mt-2">
+    <button type="submit" [disabled]="!professeur.nomProf" class="btn btn-success"
+            (click)="saveProfesseur()">{{ ajout ? 'Ajouter' : 'Modifier' }}</button>
+  </div>
+</form>
