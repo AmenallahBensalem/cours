@@ -1,0 +1,74 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+
+    <a class="navbar-brand" href="#">Gestion des Cours</a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link active" routerLink="/cours" aria-current="page">Home</a>
+        </li>
+
+        <!-- Menu Cours -->
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="dropdownCours" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Cours
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownCours">
+            @if (authService.isAdmin()) {
+            <li><a class="dropdown-item" routerLink="/add-cour">Ajouter</a></li>
+            }
+            <li><a class="dropdown-item" routerLink="/cours">Lister</a></li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li><a class="dropdown-item" routerLink="/rechercheParProfesseur">Recherche par professeur</a></li>
+            <li><a class="dropdown-item" routerLink="/rechercheParNom">Recherche par nom</a></li>
+          </ul>
+        </li>
+
+        <!-- Menu Professeurs -->
+        @if (authService.isAdmin()) {
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="dropdownProfs" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            Professeurs
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownProfs">
+            <li><a class="dropdown-item" routerLink="/listeProfesseurs">Gestion des professeurs</a></li>
+          </ul>
+        </li>
+        }
+
+      </ul>
+
+      <!-- Menu utilisateur -->
+      <ul class="navbar-nav ms-auto m-2">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="dropdownUser" role="button" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            [{{ authService.loggedUser || 'Connexion' }}]
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="dropdownUser">
+            @if (!authService.isloggedIn) {
+            <li><a class="dropdown-item" routerLink="/login">Login</a></li>
+            } @else {
+            <li><a class="dropdown-item" (click)="onLogout()" style="cursor: pointer;">Logout</a></li>
+            }
+          </ul>
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+<router-outlet></router-outlet>

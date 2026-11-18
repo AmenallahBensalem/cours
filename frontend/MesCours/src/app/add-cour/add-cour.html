@@ -1,0 +1,60 @@
+<div class="container">
+  <div>
+    <h2>Ajouter un Cours :</h2>
+  </div>
+
+  <form>
+    <div hidden class="col-sm-2 col-md-2 col-lg-2">
+      <label>Code Cours</label>
+      <input type="number" [(ngModel)]="newCour.codeCour" name="codeCour" class="form-control" />
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4">
+      <label>Intitulé</label>
+      <input
+        type="text"
+        [(ngModel)]="newCour.intituleCour"
+        name="intituleCour"
+        class="form-control"
+      />
+    </div>
+
+    <div class="col-sm-2 col-md-2 col-lg-2">
+      <label>Durée totale (h)</label>
+      <input
+        type="number"
+        [(ngModel)]="newCour.dureeTotale"
+        name="dureeTotale"
+        class="form-control"
+      />
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4">
+      <label>Date de mise à jour</label>
+      <input
+        type="date"
+        [(ngModel)]="newCour.dateMiseAJour"
+        name="dateMiseAJour"
+        class="form-control"
+      />
+    </div>
+
+    <div class="col-sm-4 col-md-4 col-lg-4">
+      <label>Professeur</label>
+      <select class="form-control" id="idProf" name="idProf" [(ngModel)]="newIdProf">
+        @for (p of professeurs; track p.codeProf) {
+          <option [ngValue]="p.codeProf">{{ p.nomProf }} ({{ p.specialiteProf }})</option>
+        }
+      </select>
+    </div>
+    @if (message) {
+      <div class="alert alert-success mt-2" role="alert">
+        {{ message }}
+      </div>
+    }
+
+    <div class="mt-2">
+      <button type="submit" (click)="addCours()" class="btn btn-success">Ajouter</button>
+    </div>
+  </form>
+</div>
