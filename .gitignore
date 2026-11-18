@@ -1,33 +1,44 @@
-HELP.md
+# Sorties de compilation et dépendances
 target/
-.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+node_modules/
+dist/
+.angular/cache/
+out-tsc/
+coverage/
+tmp/
 
-### STS ###
-.apt_generated
+# Métadonnées locales Eclipse et autres IDE
+.metadata/
+.settings/
 .classpath
 .factorypath
 .project
-.settings
+.apt_generated/
 .springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+.sts4-cache/
+.idea/
 *.iml
-*.ipr
+/.vscode/
+.history/
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Configuration locale et secrets
+.env
+.env.*
+!.env.example
+!.env.sample
+application-local.properties
+application-local.yml
+application-local.yaml
+*.jks
+*.p12
+*.pfx
+*.key
+*.pem
 
-### VS Code ###
-.vscode/
+# Fichiers temporaires et journaux
+*.log
+*.tmp
+*.swp
+*~
+.DS_Store
+Thumbs.db

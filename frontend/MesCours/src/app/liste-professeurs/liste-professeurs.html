@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="col-sm-4 col-md-4 col-lg-4 mb-4 mt-3">
+        <app-update-professeur [professeur]="updatedProf" (professeurUpdated)="professeurUpdated($event)"
+            [ajout]="ajout">
+        </app-update-professeur>
+    </div>
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Nom</th>
+                        <th>Spécialité</th>
+                        <th>Date d'embauche</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                @for (p of professeurs; track p.codeProf) {
+                <tbody>
+                    <tr>
+                        <td>{{ p.codeProf }}</td>
+                        <td>{{ p.nomProf }}</td>
+                        <td>{{ p.specialiteProf }}</td>
+                        <td>{{ p.dateEmbauche | date:'dd/MM/yyyy' }}</td>
+                        <td><a class="btn btn-success" (click)="updateProf(p)">Editer</a></td>
+                    </tr>
+                </tbody>
+                } @empty {
+                <tbody>
+                    <tr>
+                        <td colspan="5">Aucun professeur trouvé</td>
+                    </tr>
+                </tbody>
+                }
+            </table>
+        </div>
+    </div>
+</div>
