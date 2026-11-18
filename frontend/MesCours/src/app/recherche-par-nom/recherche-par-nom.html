@@ -1,0 +1,43 @@
+<div class="container">
+    <form class="form-inline">
+        <div class="form-group mx-sm-3 mb-2 mt-2">
+            <label>Intitulé en tapant</label>
+            <input [(ngModel)]="searchTerm" name="searchTerm" class="form-control">
+        </div>
+    </form>
+
+    <div class="card shadow mb-4">
+        <div class="card-body">
+            <table class="table table-striped">
+                <tr>
+                    <th>Code</th>
+                    <th>Intitulé</th>
+                    <th>Durée totale (h)</th>
+                    <th>Dernière mise à jour</th>
+                    <th>Professeur</th>
+                </tr>
+                @for (c of cours | searchFilter: searchTerm; track c.codeCour) {
+                <tbody>
+                    <tr>
+                        <td>{{ c.codeCour }}</td>
+                        <td>{{ c.intituleCour }}</td>
+                        <td>{{ c.dureeTotale }}</td>
+                        <td>{{ c.dateMiseAJour | date:'dd/MM/yyyy' }}</td>
+                        @if (c.professeur) {
+                        <td>{{ c.professeur.nomProf }}</td>
+                        } @else {
+                        <td>PAS DE PROFESSEUR</td>
+                        }
+                    </tr>
+                </tbody>
+                } @empty {
+                <tbody>
+                    <tr>
+                        <td colspan="5">Aucun cours trouvé</td>
+                    </tr>
+                </tbody>
+                }
+            </table>
+        </div>
+    </div>
+</div>
