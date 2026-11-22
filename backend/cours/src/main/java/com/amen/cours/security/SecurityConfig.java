@@ -42,6 +42,7 @@ public class SecurityConfig {
             }))
 
             .authorizeHttpRequests(requests -> requests
+                    .requestMatchers("/health").permitAll()
                     .requestMatchers("/api/all/**").hasAnyAuthority("ADMIN", "USER")
                     .requestMatchers(HttpMethod.GET, "/api/getbyid/**").hasAnyAuthority("ADMIN", "USER")
                     //.requestMatchers(HttpMethod.POST, "/api/addcour/**").hasAuthority("ADMIN")
