@@ -15,6 +15,11 @@ jobs:
     name: Maven Tests
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        java: ['17', '21']
+
     defaults:
       run:
         working-directory: backend/cours
@@ -23,11 +28,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Java 21
+      - name: Set up Java ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '21'
+          java-version: ${{ matrix.java }}
           cache: maven
           cache-dependency-path: backend/cours/pom.xml
 
@@ -38,7 +43,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: junit-test-reports
+          name: junit-test-reports-java-${{ matrix.java }}
           path: backend/cours/target/surefire-reports/
           if-no-files-found: warn
           retention-days: 7
