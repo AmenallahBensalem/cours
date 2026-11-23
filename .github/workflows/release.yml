@@ -46,4 +46,4 @@ jobs:
         with:
           context: ./backend/cours
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/cours-api:${{ github.ref_name }}
+          tags: ghcr.io/amenallahbensalem/cours-api:${{ github.ref_name }}
