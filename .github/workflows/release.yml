@@ -1,0 +1,49 @@
+
+name: Release - Docker GHCR
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    name: Publish Docker Image
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: backend/cours/pom.xml
+
+      - name: Run Maven tests
+        working-directory: backend/cours
+        run: mvn -B clean verify
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and publish versioned image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./backend/cours
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/cours-api:${{ github.ref_name }}
