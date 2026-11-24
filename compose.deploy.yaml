@@ -1,0 +1,5 @@
+﻿services:
+  backend:
+    image: ${DEPLOY_IMAGE:?DEPLOY_IMAGE requis}
+    environment:
+      APP_VERSION: ${DEPLOY_VERSION:?DEPLOY_VERSION requis}

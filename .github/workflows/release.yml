@@ -47,3 +47,110 @@ jobs:
           context: ./backend/cours
           push: true
           tags: ghcr.io/amenallahbensalem/cours-api:${{ github.ref_name }}
+
+  deploy:
+    name: Deploy to Test
+    needs: publish
+    runs-on: [self-hosted, Windows, X64, cours-deploy]
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      packages: read
+
+    concurrency:
+      group: cours-test-deployment
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Verify Docker and local environment
+        shell: powershell
+        run: |
+          docker version
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Docker is unavailable"
+          }
+
+          if (!(Test-Path "D:\projetDevops\cours\.env")) {
+            throw "Local environment file is missing"
+          }
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy versioned image
+        shell: powershell
+        run: |
+          $env:DEPLOY_VERSION = $env:GITHUB_REF_NAME
+          $env:DEPLOY_IMAGE = "ghcr.io/amenallahbensalem/cours-api:$env:GITHUB_REF_NAME"
+
+          Write-Host "Deploying $env:DEPLOY_IMAGE"
+
+          docker pull $env:DEPLOY_IMAGE
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Docker pull failed"
+          }
+
+          docker compose --env-file "D:\projetDevops\cours\.env" -f compose.test.yaml -f compose.deploy.yaml up -d --no-build --wait --wait-timeout 180
+
+          if ($LASTEXITCODE -ne 0) {
+            throw "Docker Compose deployment failed"
+          }
+
+      - name: Verify deployed image
+        shell: powershell
+        run: |
+          $expected = "ghcr.io/amenallahbensalem/cours-api:$env:GITHUB_REF_NAME"
+          $actual = docker inspect cours-test-backend-1 --format '{{.Config.Image}}'
+
+          if ($LASTEXITCODE -ne 0 -or $actual -ne $expected) {
+            throw "Incorrect Docker image deployed"
+          }
+
+          Write-Host "Deployed image: $actual"
+
+      - name: Health check
+        shell: powershell
+        run: |
+          $healthy = $false
+
+          for ($i = 1; $i -le 30; $i++) {
+            try {
+              $state = docker inspect cours-test-backend-1 --format '{{.State.Health.Status}}'
+
+              $response = Invoke-RestMethod `
+                -Uri "http://localhost:8083/cours/health" `
+                -TimeoutSec 5 `
+                -ErrorAction Stop
+
+              if ($state -eq "healthy" -and
+                  $response.status -eq "UP" -and
+                  $response.version -eq $env:GITHUB_REF_NAME) {
+
+                Write-Host "Health check successful"
+                $response | ConvertTo-Json
+                $healthy = $true
+                break
+              }
+            }
+            catch {
+              Write-Host "Waiting for application..."
+            }
+
+            Start-Sleep -Seconds 5
+          }
+
+          if (!$healthy) {
+            throw "Health check failed"
+          }
